@@ -1,11 +1,13 @@
 package in.learnjavaskills.dynamodbwithawslambda.dto;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 import lombok.Getter;
 import lombok.Setter;
 
-@ConfigurationProperties("dynamodb.credential")
+@Component
+@ConfigurationProperties("dynamodb.credentials")
 @Getter
 @Setter
 public class DynamoDBCredentials 

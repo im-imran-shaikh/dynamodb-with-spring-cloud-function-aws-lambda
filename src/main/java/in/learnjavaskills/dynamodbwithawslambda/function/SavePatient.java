@@ -50,7 +50,7 @@ public class SavePatient implements Function<GatewayRequest, GatewayResponse>
 		{
 			log.error("SOMETHING WENT WRONG IN PERSISTING PATIENT DETAILS, INSPECT MANUALLY", exception);
 			return GatewayResponse.builder()
-					.message("FAILEd")
+					.message("FAILED")
 					.isSuccess(false)
 					.build();
 		}
@@ -60,26 +60,28 @@ public class SavePatient implements Function<GatewayRequest, GatewayResponse>
 	{
 		String addressInPipeSeparated = gatewayRequest.getAddress();
 		AtomicReference<Address> addressAtomicReference = new AtomicReference<>();
+		Address address = new Address();
+		addressAtomicReference.set(address);
 		
 		
 		if (Objects.nonNull(addressInPipeSeparated) && addressInPipeSeparated.contains("|"))
 		{
-			String[] addressParameters = addressInPipeSeparated.split("|");
+			String[] addressParameters = addressInPipeSeparated.split("\\|");
 			IntStream.iterate(0, increment -> increment + 1)
 				.limit(addressParameters.length)
 				.forEach(index -> {
-					Address address = addressAtomicReference.get();
+					Address patientAddress = addressAtomicReference.get();
 					if (index == 0)
-						address.setLine1(addressParameters[index]);
+						patientAddress.setLine1(addressParameters[index].trim());
 					else if (index == 1)
-						address.setLine2(addressParameters[index]);
+						patientAddress.setLine2(addressParameters[index].trim());
 					else if (index == 2)
-						address.setCity(addressParameters[index]);
+						patientAddress.setCity(addressParameters[index].trim());
 					else if (index == 3)
-						address.setState(addressParameters[index]);
+						patientAddress.setState(addressParameters[index].trim());
 					else if (index == 4)
-						address.setCountry(addressParameters[index]);
-					addressAtomicReference.set(address);
+						patientAddress.setCountry(addressParameters[index].trim());
+					addressAtomicReference.set(patientAddress);
 				});
 		}
 		
